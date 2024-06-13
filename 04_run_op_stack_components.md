@@ -57,9 +57,27 @@ cd ~/optimism/op-batcher
   --rpc.addr=0.0.0.0 \
   --rpc.port=8548 \
   --rpc.enable-admin \
-  --max-channel-duration=8 \
+  --max-channel-duration=4 \
   --l1-eth-rpc=$L1_RPC_URL \
   --private-key=$GS_BATCHER_PRIVATE_KEY
 ```
 
 _The `--max-channel-duration=n` setting tells the batcher to write all the data to L1 every `n` L1 blocks. When it is low, transactions are written to L1 frequently and other nodes can synchronize from L1 quickly. When it is high, transactions are written to L1 less frequently and the batcher spends less ETH. If you want to reduce costs, either set this value to 0 to disable it or increase it to a higher value._
+
+
+## Start op-proposer
+
+Now start op-proposer, which proposes new state roots.
+
+#### 1. Open up a new terminal
+
+You'll need a terminal window to run the op-proposer in. Navigate to the op-proposer directory
+
+```bash
+cd ~/optimism/op-proposer
+```
+
+#### 2. Run op-proposer
+```bash
+./bin/op-proposer \  --poll-interval=12s --rpc.port=8560  --rollup-rpc=http://localhost:8547  --l2oo-address=0x7d74587ABcf569850A3E639ec4f01471725b2B11   --private-key=$GS_PROPOSER_PRIVATE_KEY  --l1-eth-rpc=$L1_RPC_URL
+```
