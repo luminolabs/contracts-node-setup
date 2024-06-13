@@ -11,26 +11,26 @@ We’re going to be spinning up an EVM Rollup from the OP Stack source code.  We
     git clone https://github.com/ethereum-optimism/optimism.git
     ```
 
-1. Enter the Optimism Monorepo.
+2. Enter the Optimism Monorepo.
 
     ```bash
     cd optimism
     ```
 
-1. Install required modules. This is a slow process, while it is running you can already start building `op-geth`, as shown below.
+3. Install required modules. This is a slow process, while it is running you can already start building `op-geth`, as shown below.
 
     ```bash
     pnpm install
     ```
 
-1. Build the various packages inside of the Optimism Monorepo.
+4. Build the various packages inside of the Optimism Monorepo.
 
     ```bash
     make op-node op-batcher op-proposer
     pnpm build
     ```
 
-    Don't worry if this takes more time, it takes about 5 mins on mac m3 to complete this step
+    Please note that this a considerably longer step (about 15 mins) and §solc can take up 
 
 ### Build op-geth
 
