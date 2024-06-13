@@ -79,5 +79,9 @@ cd ~/optimism/op-proposer
 
 #### 2. Run op-proposer
 ```bash
-./bin/op-proposer \  --poll-interval=12s --rpc.port=8560  --rollup-rpc=http://localhost:8547  --l2oo-address=0x7d74587ABcf569850A3E639ec4f01471725b2B11   --private-key=$GS_PROPOSER_PRIVATE_KEY  --l1-eth-rpc=$L1_RPC_URL
+./bin/op-proposer \  --poll-interval=12s --rpc.port=8560  --rollup-rpc=http://localhost:8547  --l2oo-address=<L2OutputOracleProxyAddress>   --private-key=$GS_PROPOSER_PRIVATE_KEY  --l1-eth-rpc=$L1_RPC_URL
 ```
+
+you'll be able to get L2OutputOracleProxyAddress from the path `/packages/contracts-bedrock/deployments/<l1-chain-id>-deploy.json`
+
+In our the L1 chainId is `17000` which belongs to Holesky
