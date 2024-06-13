@@ -139,11 +139,11 @@ Once you’ve configured your network, it’s time to deploy the L1 smart contra
 
 _If you see a nondescript error that includes `EvmError: Revert` and `Script failed` then you likely need to change the `IMPL_SALT` environment variable. This variable determines the addresses of various smart contracts that are deployed via [CREATE2](https://eips.ethereum.org/EIPS/eip-1014). If the same `IMPL_SALT` is used to deploy the same contracts twice, the second deployment will fail. You can generate a new `IMPL_SALT` by running direnv allow anywhere in the Optimism Monorepo._
 
-```
-
+<!-- 3. Generate contract artifacts:
+    
     ```bash
     forge script scripts/Deploy.s.sol:Deploy --sig 'sync()' --rpc-url $L1_RPC_URL
-    ```
+    ``` -->
 
 Contract deployment can take up to 15-30 minutes. Please wait for all smart contracts to be fully deployed before continuing to the next step.
 
@@ -151,7 +151,15 @@ Contract deployment can take up to 15-30 minutes. Please wait for all smart cont
 
 We’ve set up the L1 side of things, but now we need to set up the L2 side of things. We do this by generating three important files, a `genesis.json` file, a `rollup.json` configuration file, and a `jwt.txt` [JSON Web Token](https://jwt.io/introduction) that allows the `op-node` and `op-geth` to communicate securely.
 
-1. Head over to the `op-node` package.
+1. Generate `state-dump` and `l2-allocs`
+
+```bash
+cd ~/optimism/packages/contracts-bedrock
+
+CONTRACT_ADDRESSES_PATH=./deployments/17000-deploy.json DEPLOY_CONFIG_PATH=./deploy-config/lumino-test.json STATE_DUMP_PATH=./deployments/l2-allocs.json  forge script scripts/L2Genesis.s.sol:L2Genesis  --sig 'runWithStateDump()'
+```
+
+2. Head over to the `op-node` package.
 
     ```bash
     cd ~/optimism/op-node
@@ -160,23 +168,24 @@ We’ve set up the L1 side of things, but now we need to set up the L2 side of t
 1. Run the following command, and make sure to replace `<RPC>` with your L1 RPC URL:
 
     ```bash
-    go run cmd/main.go genesis l2 \
-        --deploy-config ../packages/contracts-bedrock/deploy-config/getting-started.json \
-        --deployment-dir ../packages/contracts-bedrock/deployments/getting-started/ \
-        --outfile.l2 genesis.json \
-        --outfile.rollup rollup.json \
-        --l1-rpc <RPC>
+    go run cmd/main.go genesis l2 
+    --l1-rpc <l1-rpc-value>
+    --deploy-config ../packages/contracts-bedrock/deploy-config/lumino-test.json 
+    --l2-allocs ../packages/contracts-bedrock/deployments/l2-allocs.json 
+    --l1-deployments ../packages/contracts-bedrock/deployments/17000-deploy.json 
+    --outfile.l2 genesis.json  
+    --outfile.rollup rollup.json
     ```
 
     You should then see the `genesis.json` and `rollup.json` files inside the `op-node` package.
 
- 1. Next, generate the `jwt.txt` file with the following command:
+ 4. Next, generate the `jwt.txt` file with the following command:
 
     ```bash
     openssl rand -hex 32 > jwt.txt
     ```
 
-1. Finally, we’ll need to copy the `genesis.json` file and `jwt.txt` file into `op-geth` so we can use it to initialize and run `op-geth` in just a minute:
+5. Finally, we’ll need to copy the `genesis.json` file and `jwt.txt` file into `op-geth` so we can use it to initialize and run `op-geth` in just a minute:
 
     ```bash
     cp genesis.json ~/op-geth
